@@ -1,2 +1,6 @@
 .project
+metadata.json
 .vagrant
+pkg/*
+tmp/*
+README.pdf

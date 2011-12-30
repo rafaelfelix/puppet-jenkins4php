@@ -1,11 +1,6 @@
-name    'puppet-jenkins4php'
-version '0.0.1'
-source 'UNKNOWN'
-author 'puppet'
-license 'UNKNOWN'
-summary 'UNKNOWN'
-description 'UNKNOWN'
-project_page 'UNKNOWN'
+name    'rafaelfc-jenkins4php'
+version '1.0.0'
 
 ## Add dependencies, if any:
-# dependency 'username/name', '>= 1.2.0'
+dependency 'rafaelfc/jenkins', '>= 1.0.0'
+dependency 'rafaelfc/phpqatools', '>= 1.0.0'
