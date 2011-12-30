@@ -11,20 +11,25 @@
 # Sample Usage:
 #
 # [Remember: No empty lines between comments and class definition]
+# Class: jenkins4php
+#
+# This module manages jenkins4php
+#
+# Parameters:
+#
+# Actions:
+#
+# Requires:
+#
+# Sample Usage:
+#
+# [Remember: No empty lines between comments and class definition]
 class jenkins4php {
+	include phpqatools
+	include java
 	include jenkins
-	include jenkins4php::plugins
-	include jenkins4php::templatejob
 	
-	package { "java-1.6.0-openjdk":
-		ensure => installed
-	}
-
-	Package['java-1.6.0-openjdk'] -> Class['Jenkins'] -> Class['jenkins4php::plugins'] -> Class['jenkins4php::templatejob']
-}
-
-class jenkins4php::plugins inherits jenkins {
-    # Jenkins plugins
+	# Jenkins plugins
     install-jenkins-plugin {
     	"git-plugin" :
     		name => "git";
@@ -79,21 +84,32 @@ class jenkins4php::plugins inherits jenkins {
         "xunit" :
             name => "xunit";
     }
-}
+    
+    install-jenkins-plugin {
+        "build-pipeline-plugin" :
+            name => "build-pipeline-plugin";
+    }
 
-class jenkins4php::templatejob {
+	# PHP Template Job (see: http://jenkins-php.org/)
 	$jenkins_dir = '/var/lib/jenkins'
-	File {
+	file { "${jenkins_dir}/jobs":
+		owner => "jenkins",
+		group => "jenkins",
+		ensure => directory 
+	}
+	file { "${jenkins_dir}/jobs/php-template":
 		owner => "jenkins",
 		group => "jenkins",
 		ensure => directory
 	}
-	file { "${jenkins_dir}/jobs": }
-	file { "${jenkins_dir}/jobs/php-template": }
 	file { "${jenkins_dir}/jobs/php-template/config.xml":
+		owner => "jenkins",
+		group => "jenkins",
 		source => "puppet:///modules/jenkins4php/php-template/config.xml"
 	}
 	file { "${jenkins_dir}/jobs/php-template/LICENSE":
+		owner => "jenkins",
+		group => "jenkins",
 		source => "puppet:///modules/jenkins4php/php-template/LICENSE"
 	}
 	exec {
@@ -102,9 +118,6 @@ class jenkins4php::templatejob {
 		cwd => "${jenkins_dir}/war/WEB-INF",
 		require => File["${jenkins_dir}/jobs/php-template/config.xml"]
 	}
+	
+	Class['java'] -> Class['jenkins::repo'] -> Class['jenkins::package'] -> Class['jenkins::service'] -> Class['phpqatools'] -> Class['jenkins4php']
 }
-
-include phpqatools
-include jenkins4php
-
-Class["phpqatools"] -> Class["jenkins4php"]
