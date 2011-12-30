@@ -1,10 +1,9 @@
 ## Jenkins CI Server
-class jenkins4php inherits jenkins {
-
-    package { "java-1.6.0-openjdk":
-    	ensure => installed
-    }
+package { "java-1.6.0-openjdk":
+	ensure => installed
+}
     
+class jenkins4php inherits jenkins {
     # Jenkins plugins
     install-jenkins-plugin {
     	"git-plugin" :
@@ -65,4 +64,4 @@ class jenkins4php inherits jenkins {
 include phpqatools
 include jenkins4php
 
-Class["phpqatools"] -> Class["jenkins4php"]
+Class["phpqatools"] -> Package["java-1.6.0-openjdk"] -> Class["jenkins4php"]
