@@ -11,4 +11,4 @@ description 'Enables provisioning a Jenkins CI Server for PHP Project.
 Contais: most of the PHPQATools (http://phpqatools.org), a template job (http://jenkins-php.org) and its plugins.'
 dependency 'rafaelfc/jenkins', '>=1.0.0'
 dependency 'rafaelfc/phpqatools', '>=1.0.0'
-dependency 'rafaelfc/java', '>=0.1.5'
+dependency 'rafaelfc/java', '>=1.0.0'
