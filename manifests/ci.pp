@@ -2,8 +2,15 @@
 package { "java-1.6.0-openjdk":
 	ensure => installed
 }
-    
-class jenkins4php inherits jenkins {
+
+class jenkins4php {
+	include jenkins4php::plugins
+	include jenkins4php::templatejob
+
+	Class['jenkins4php::plugins'] -> Class['jenkins4php::templatejob']
+}
+
+class jenkins4php::plugins inherits jenkins {
     # Jenkins plugins
     install-jenkins-plugin {
     	"git-plugin" :
@@ -59,6 +66,29 @@ class jenkins4php inherits jenkins {
         "xunit" :
             name => "xunit";
     }
+}
+
+class jenkins4php::templatejob {
+	$jenkins_dir = '/var/lib/jenkins'
+	File {
+		owner => "jenkins",
+		group => "jenkins",
+		ensure => directory
+	}
+	file { "${jenkins_dir}/jobs": }
+	file { "${jenkins_dir}/jobs/php-template": }
+	file { "${jenkins_dir}/jobs/php-template/config.xml":
+		source => "/vagrant/files/php-template/config.xml"
+	}
+	file { "${jenkins_dir}/jobs/php-template/LICENSE":
+		source => "/vagrant/files/php-template/LICENSE"
+	}
+	exec {
+		"java -jar jenkins-cli.jar -s http://localhost:8080 reload-configuration":
+		path => "/usr/bin",
+		cwd => "${jenkins_dir}/war/WEB-INF",
+		require => File["${jenkins_dir}/jobs/php-template/config.xml"]
+	}
 }
 
 include phpqatools
