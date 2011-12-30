@@ -12,6 +12,7 @@
 #
 # [Remember: No empty lines between comments and class definition]
 class jenkins4php {
+	include jenkins
 	include jenkins4php::plugins
 	include jenkins4php::templatejob
 	
@@ -19,7 +20,7 @@ class jenkins4php {
 		ensure => installed
 	}
 
-	Class['java-1.6.0-openjdk'] -> Class['jenkins4php::plugins'] -> Class['jenkins4php::templatejob']
+	Package['java-1.6.0-openjdk'] -> Class['Jenkins'] -> Class['jenkins4php::plugins'] -> Class['jenkins4php::templatejob']
 }
 
 class jenkins4php::plugins inherits jenkins {
@@ -90,10 +91,10 @@ class jenkins4php::templatejob {
 	file { "${jenkins_dir}/jobs": }
 	file { "${jenkins_dir}/jobs/php-template": }
 	file { "${jenkins_dir}/jobs/php-template/config.xml":
-		source => "/vagrant/files/php-template/config.xml"
+		source => "puppet:///modules/jenkins4php/php-template/config.xml"
 	}
 	file { "${jenkins_dir}/jobs/php-template/LICENSE":
-		source => "/vagrant/files/php-template/LICENSE"
+		source => "puppet:///modules/jenkins4php/php-template/LICENSE"
 	}
 	exec {
 		"java -jar jenkins-cli.jar -s http://localhost:8080 reload-configuration":
