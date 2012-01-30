@@ -7,13 +7,13 @@
 # Actions:
 #
 # Requires:
+#  - phpqatools
+#  - jenkins
 #
 # Sample Usage:
 #
-# [Remember: No empty lines between comments and class definition]
 class jenkins4php {
 	include phpqatools
-	include java
 	include jenkins
 	
 	# Jenkins plugins
