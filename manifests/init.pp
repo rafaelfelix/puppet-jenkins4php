@@ -84,13 +84,13 @@ class jenkins4php {
 
     case $operatingsystem {
         ubuntu: {
-            $jenkins_cli_jar = "/usr/share/jenkins/cli/java/cli.jar"
+            $jenkins_reload_exec = "service jenkins reload"
         }
         debian: {
-            $jenkins_cli_jar = "/usr/share/jenkins/cli/java/cli.jar"
+            $jenkins_reload_exec = "/etc/init.d/jenkins reload"
         }
         default: {
-            $jenkins_cli_jar = "${jenkins_dir}/war/WEB-INF/jenkins-cli.jar"
+            $jenkins_reload_exec = "java -jar ${jenkins_dir}/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080 reload-configuration"
         }
     }
 
@@ -115,8 +115,7 @@ class jenkins4php {
 		source => "puppet:///modules/jenkins4php/php-template/LICENSE"
 	}
 	exec {
-		"java -jar ${jenkins_cli_jar} -s http://localhost:8080 reload-configuration":
-		path => "/usr/bin",
+		"${jenkins_reload_exec}":
 		require => File["${jenkins_dir}/jobs/php-template/config.xml"]
 	}
 	
