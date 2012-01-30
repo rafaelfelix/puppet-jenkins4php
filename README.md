@@ -16,7 +16,7 @@ include jenkins4php
 Building
 --------
 
-
+Be sure to run git submodule update --init before building.
 
 
 Contributing
