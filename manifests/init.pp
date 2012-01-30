@@ -7,15 +7,17 @@
 # Actions:
 #
 # Requires:
+#  - phpqatools
+#  - jenkins
 #
 # Sample Usage:
 #
-# [Remember: No empty lines between comments and class definition]
 class jenkins4php {
 	include phpqatools
-	include java
 	include jenkins
-	
+
+
+    	
 	# Jenkins plugins
     install-jenkins-plugin {
     	"git-plugin" :
@@ -79,6 +81,19 @@ class jenkins4php {
 
 	# PHP Template Job (see: http://jenkins-php.org/)
 	$jenkins_dir = '/var/lib/jenkins'
+
+    case $operatingsystem {
+        ubuntu: {
+            $jenkins_reload_exec = "service jenkins reload"
+        }
+        debian: {
+            $jenkins_reload_exec = "/etc/init.d/jenkins reload"
+        }
+        default: {
+            $jenkins_reload_exec = "java -jar ${jenkins_dir}/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080 reload-configuration"
+        }
+    }
+
 	file { "${jenkins_dir}/jobs":
 		owner => "jenkins",
 		group => "jenkins",
@@ -100,11 +115,9 @@ class jenkins4php {
 		source => "puppet:///modules/jenkins4php/php-template/LICENSE"
 	}
 	exec {
-		"java -jar jenkins-cli.jar -s http://localhost:8080 reload-configuration":
-		path => "/usr/bin",
-		cwd => "${jenkins_dir}/war/WEB-INF",
+		"${jenkins_reload_exec}":
 		require => File["${jenkins_dir}/jobs/php-template/config.xml"]
 	}
 	
-	Class['java'] -> Class['jenkins::repo'] -> Class['jenkins::package'] -> Class['jenkins::service'] -> Class['phpqatools'] -> Class['jenkins4php']
+	Class['jenkins::repo'] -> Class['jenkins::package'] -> Class['jenkins::service'] -> Class['phpqatools'] -> Class['jenkins4php']
 }
