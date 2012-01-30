@@ -15,7 +15,9 @@
 class jenkins4php {
 	include phpqatools
 	include jenkins
-	
+
+
+    	
 	# Jenkins plugins
     install-jenkins-plugin {
     	"git-plugin" :
@@ -79,6 +81,12 @@ class jenkins4php {
 
 	# PHP Template Job (see: http://jenkins-php.org/)
 	$jenkins_dir = '/var/lib/jenkins'
+
+    $jenkins_cli_jar = $operatingsystem ? {
+        debian  => "/usr/share/jenkins/cli/java/cli.jar",
+        default => "${jenkins_dir}/war/WEB-INF/jenkins-cli.jar",
+    }
+
 	file { "${jenkins_dir}/jobs":
 		owner => "jenkins",
 		group => "jenkins",
@@ -100,9 +108,8 @@ class jenkins4php {
 		source => "puppet:///modules/jenkins4php/php-template/LICENSE"
 	}
 	exec {
-		"java -jar jenkins-cli.jar -s http://localhost:8080 reload-configuration":
+		"java -jar ${jenkins_cli_jar} -s http://localhost:8080 reload-configuration":
 		path => "/usr/bin",
-		cwd => "${jenkins_dir}/war/WEB-INF",
 		require => File["${jenkins_dir}/jobs/php-template/config.xml"]
 	}
 	
