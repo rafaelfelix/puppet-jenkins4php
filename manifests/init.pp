@@ -106,5 +106,5 @@ class jenkins4php {
 		require => File["${jenkins_dir}/jobs/php-template/config.xml"]
 	}
 	
-	Class['java'] -> Class['jenkins::repo'] -> Class['jenkins::package'] -> Class['jenkins::service'] -> Class['phpqatools'] -> Class['jenkins4php']
+	Class['jenkins::repo'] -> Class['jenkins::package'] -> Class['jenkins::service'] -> Class['phpqatools'] -> Class['jenkins4php']
 }
