@@ -82,11 +82,16 @@ class jenkins4php {
 	# PHP Template Job (see: http://jenkins-php.org/)
 	$jenkins_dir = '/var/lib/jenkins'
 
-
-
-    $jenkins_cli_jar = $operatingsystem ? {
-        /(?i)(Debian|Ubuntu)/ => "/usr/share/jenkins/cli/java/cli.jar",
-        default => "${jenkins_dir}/war/WEB-INF/jenkins-cli.jar",
+    case $operatingsystem {
+        ubuntu: {
+            $jenkins_cli_jar = "/usr/share/jenkins/cli/java/cli.jar"
+        }
+        debian: {
+            $jenkins_cli_jar = "/usr/share/jenkins/cli/java/cli.jar"
+        }
+        default: {
+            $jenkins_cli_jar = "${jenkins_dir}/war/WEB-INF/jenkins-cli.jar"
+        }
     }
 
 	file { "${jenkins_dir}/jobs":
