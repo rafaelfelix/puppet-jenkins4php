@@ -84,10 +84,10 @@ class jenkins4php {
 
     case $operatingsystem {
         ubuntu: {
-            $jenkins_reload_exec = "service jenkins reload"
+            $jenkins_reload_exec = "service jenkins restart"
         }
         debian: {
-            $jenkins_reload_exec = "/etc/init.d/jenkins reload"
+            $jenkins_reload_exec = "/etc/init.d/jenkins restart"
         }
         default: {
             $jenkins_reload_exec = "java -jar ${jenkins_dir}/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080 reload-configuration"
